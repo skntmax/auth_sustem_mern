@@ -11,25 +11,31 @@ export default function Homepage() {
         e.preventDefault()
     }
     const [user,setUser] = useState({
-        username:" " ,
-        email: "" ,
-        password: " " 
-    })
+         username :" " ,
+         email : "" ,
+         password : " " 
+    
+      })
   
  const onchangeinput =(e)=>{
     setUser( { ...user , [e.target.name]: e.target.value }  )
- }
+ 
+  }
 
 const signup = (e)=>{
-    e.preventDefault()
+   console.log(user)
+    
+   e.preventDefault()
     try{
-      const {username ,email , password } = user; 
-      axios.post('/register', {username ,email , password } ).then(res=>{
+      const {username ,email , password } = user;
+       axios.post('/register', {  username , email , password } ).then(res=>{
           console.log(res.data.success) 
-           if(res.data.success==1){
+           
+          if(res.data.success==1){
+
                 swal("Congratulations!", res.data.message, "success")
                 history.push('/login')
-              }
+          }
 
              else{
               swal("Error!", res.data.message, "error")

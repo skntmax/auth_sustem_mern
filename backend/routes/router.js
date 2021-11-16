@@ -10,11 +10,9 @@ const authenticate  = require('./../middleware/authenticate')
 var cookieParser = require('cookie-parser');
 router.use(cookieParser())
 
-
-
 router.post('/register' ,async (req,res)=>{ 
 
-    const { username , email , password } = req.body
+    const { username , email , password }  = req.body
   const isuser =await authUserModel.find({ $or: [ {username : username } , { email:email} , { password : password}] }) 
   
   if(isuser!=""){         
@@ -32,11 +30,12 @@ router.post('/register' ,async (req,res)=>{
        "password" : hashpass
   }) 
 
+
   if(await result.save() ) {
        console.log( username + "user added ")
        res.send({
             success :  1 ,
-            message  : "user registered succesfully "
+            message  : "user registered succesfully"
        })
   }
   else{
@@ -55,7 +54,7 @@ router.post('/login' ,async(req,res)=>{
     if(!((email && password) || (username && password)  ) ){
         res.send({
             success :  0 ,    
-            message : "please provide username email and password "
+            message : "please provide username or email  "
         })
     } 
     else{
@@ -66,7 +65,7 @@ router.post('/login' ,async(req,res)=>{
         
             if(ispass==true){
                 // logged area 
-                let token = await jwt.sign({_id:isuser[0]._id} ,'shashikantkumarmax')   
+                let token = await jwt.sign({_id:isuser[0]._id} , 'shashikantkumarmax' )   
                const jwtupdate =await authUserModel.findOneAndUpdate({_id:isuser[0]._id } ,{ jwttoken: token })
                res.cookie(`jwttoken` , token , {expire : new Date() + 9999}) 
 
@@ -83,7 +82,7 @@ router.post('/login' ,async(req,res)=>{
                    // logged in area 
                 } 
                 else{
-                    res.send({
+                    res.send( {
                         success :  0 ,    
                         message : "email and pass incorrect   "    
                     })
@@ -93,7 +92,7 @@ router.post('/login' ,async(req,res)=>{
              else{
                 res.send({
                     success :  0 ,    
-                    message : "Invalid credentials   "    
+                    message : " Invalid credentials "    
                 })
              }  
                       
@@ -111,12 +110,15 @@ router.post('/login' ,async(req,res)=>{
 
 })
 
-router.get('/dashboard' , authenticate, (req,res)=>{
-  res.send({
+router.get('/dashboard' , authenticate , (req,res)=>{
+  
+    res.send({
+
        message : "dashboard page" , user:{
            username: req.currentuser.username ,
            email:  req.currentuser.email 
-    }
+    
+        }
   })
     
 })
